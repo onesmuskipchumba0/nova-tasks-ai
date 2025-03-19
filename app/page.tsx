@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 interface Project {
   title: string;
   technology: string;
-  difficulty: string;
+  difficulty: 'beginner' | 'intermediate' | 'advanced';
   description: string;
   learningPoints?: string[];
 }
@@ -30,6 +30,8 @@ const STACKS: Record<string, string[]> = {
   Ruby: ["Ruby on Rails", "Sinatra"],
   PHP: ["Laravel", "Symfony", "WordPress"]
 };
+
+const DIFFICULTY_LEVELS = ['beginner', 'intermediate', 'advanced'] as const;
 
 export default function Home() {
   const [project, setProject] = useState<Project | null>(null);
@@ -151,9 +153,11 @@ export default function Home() {
                 className="block w-full sm:w-48 px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 <option value="">Select Difficulty</option>
-                <option value="beginner">Beginner</option>
-                <option value="intermediate">Intermediate</option>
-                <option value="advanced">Advanced</option>
+                {DIFFICULTY_LEVELS.map(level => (
+                  <option key={level} value={level}>
+                    {level.charAt(0).toUpperCase() + level.slice(1)}
+                  </option>
+                ))}
               </select>
             </div>
           </div>

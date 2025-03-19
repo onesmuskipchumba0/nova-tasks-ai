@@ -30,8 +30,10 @@ export async function POST(request: Request) {
   console.log('API route: Received project generation request');
   
   try {
-    const { language, stack } = await request.json();
-    const projectData = await OpenAIModel(`Generate a ${stack} project using ${language}`);
+    const { language, stack, difficulty } = await request.json();
+    const projectData = await OpenAIModel(
+      `Generate a ${difficulty} level ${stack} project using ${language}`
+    );
     
     if (!projectData) {
       throw new Error('No data received from OpenAI');

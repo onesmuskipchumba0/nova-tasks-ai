@@ -15,12 +15,12 @@ export async function OpenAIModel(prompt: string = "Generate a coding project"){
             throw new Error('OPENAI_API_KEY is not configured');
         }
 
-        const projectPrompt = `Generate a valid JSON object for a ${prompt}. The response must follow this structure exactly, with no additional text:
+        const projectPrompt = `Generate a valid JSON object for a ${prompt}. Use EXACTLY one of these difficulty levels: "beginner", "intermediate", or "advanced". The response must follow this structure exactly:
         {
           "title": "Project title",
           "technology": "Main technology/framework used",
-          "difficulty": "beginner|intermediate|advanced",
-          "description": "Detailed project description with specific technical requirements",
+          "difficulty": "beginner" | "intermediate" | "advanced",
+          "description": "Detailed project description",
           "learningPoints": ["array", "of", "learning", "points"],
           "estimatedTime": "estimated completion time",
           "prerequisites": ["required", "skills", "or", "knowledge"]
