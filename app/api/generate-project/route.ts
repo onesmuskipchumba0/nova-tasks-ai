@@ -1,6 +1,7 @@
 import { OpenAIModel } from '@/utils/openai';
 import { NextResponse } from 'next/server';
 
+
 export async function GET() {
   console.log('API route: Received project generation request');
   
@@ -18,8 +19,9 @@ export async function GET() {
     return NextResponse.json(parsedData);
   } catch (error) {
     console.error('API route error:', error);
+    const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';
     return NextResponse.json(
-      { error: 'Failed to generate project', details: error.message },
+      { error: 'Failed to generate project', details: errorMessage },
       { status: 500 }
     );
   }

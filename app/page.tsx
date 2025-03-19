@@ -1,10 +1,18 @@
 'use client'
 import { useState } from 'react';
 
+interface Project {
+  title: string;
+  technology: string;
+  difficulty: string;
+  description: string;
+  learningPoints?: string[];
+}
+
 export default function Home() {
-  const [project, setProject] = useState(null);
+  const [project, setProject] = useState<Project | null>(null);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<string | null>(null);
 
   const generateProject = async () => {
     setLoading(true);
@@ -24,7 +32,7 @@ export default function Home() {
       setProject(data);
     } catch (error) {
       console.error('Error generating project:', error);
-      setError(error.message);
+      setError(error instanceof Error ? error.message : 'An unknown error occurred');
     } finally {
       setLoading(false);
     }

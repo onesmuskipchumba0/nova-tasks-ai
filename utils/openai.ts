@@ -47,8 +47,12 @@ export async function OpenAIModel(prompt: string = "Generate a coding project"){
         
         // Validate JSON
         try {
+            if (!content) {
+                throw new Error('Empty response from OpenAI');
+            }
             const parsedJson = JSON.parse(content);
             return JSON.stringify(parsedJson);
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         } catch (parseError) {
             console.error('Failed to parse OpenAI response as JSON:', content);
             throw new Error('Invalid JSON response from OpenAI');
