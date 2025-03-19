@@ -23,7 +23,8 @@ export async function OpenAIModel(prompt: string = "Generate a coding project"){
           "description": "Detailed project description",
           "learningPoints": ["array", "of", "learning", "points"],
           "estimatedTime": "estimated completion time",
-          "prerequisites": ["required", "skills", "or", "knowledge"]
+          "prerequisites": ["required", "skills", "or", "knowledge"],
+          "hints": ["helpful", "implementation", "tips"]
         }`;
 
         console.log('OpenAI: Sending request to API');

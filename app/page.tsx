@@ -1,5 +1,7 @@
 'use client'
 import { useState, useEffect } from 'react';
+import { Project, sampleProjects } from '@/data/sampleProjects';
+import Link from 'next/link';
 
 interface Project {
   title: string;
@@ -7,6 +9,7 @@ interface Project {
   difficulty: 'beginner' | 'intermediate' | 'advanced';
   description: string;
   learningPoints?: string[];
+  hints?: string[];
 }
 
 const LANGUAGES = [
@@ -40,6 +43,8 @@ export default function Home() {
   const [selectedLanguage, setSelectedLanguage] = useState<string>("");
   const [selectedStack, setSelectedStack] = useState<string>("");
   const [difficultyLevel, setDifficultyLevel] = useState<string>("");
+  const [showHints, setShowHints] = useState<boolean>(false);
+  const [showingHints, setShowingHints] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
     console.log('Language changed:', selectedLanguage);
@@ -93,6 +98,58 @@ export default function Home() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const toggleHints = (projectId: string, event: React.MouseEvent) => {
+    event.preventDefault();
+    event.stopPropagation();
+    setShowingHints(prev => ({
+      ...prev,
+      [projectId]: !prev[projectId]
+    }));
+  };
+
+  const ProjectCard = ({ project, projectId }: { project: Project, projectId: string }) => {
+    const saveAndNavigate = () => {
+      localStorage.setItem(`project-${projectId}`, JSON.stringify(project));
+    };
+
+    return (
+      <div
+        id={`project-${projectId}`}
+        className="bg-white rounded-xl shadow-lg overflow-hidden transform transition-all duration-300 hover:scale-105 hover:shadow-2xl mt-12 mb-12"
+      >
+        <div className="p-6">
+          <div className="mb-4">
+            <div className="flex justify-between items-center">
+              <h2 className="text-2xl font-bold text-gray-900">{project.title}</h2>
+              <div className="flex items-center space-x-2">
+                <span className={`px-3 py-1 rounded-full text-sm font-medium ${
+                  project.difficulty === 'beginner' ? 'bg-green-100 text-green-800' :
+                  project.difficulty === 'intermediate' ? 'bg-yellow-100 text-yellow-800' :
+                  'bg-red-100 text-red-800'
+                }`}>
+                  {project.difficulty}
+                </span>
+                <span className="inline-block px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm font-medium">
+                  {project.technology}
+                </span>
+              </div>
+            </div>
+          </div>
+          <p className="text-gray-600 mb-4 line-clamp-3 text-start">{project.description}</p>
+          <div className="flex justify-end">
+            <Link 
+              href={`/project/${projectId}`}
+              onClick={saveAndNavigate}
+              className="bg-blue-600 text-white font-semibold py-2 px-4 rounded hover:bg-blue-700 transition-colors"
+            >
+              View Details →
+            </Link>
+          </div>
+        </div>
+      </div>
+    );
   };
 
   return (
@@ -183,29 +240,33 @@ export default function Home() {
             </div>
           )}
 
-          {project && (
-            <div className="mt-8 bg-white p-6 rounded-lg shadow-lg text-left">
-              <h2 className="text-2xl font-bold mb-4">{project.title}</h2>
-              <div className="mb-4">
-                <span className="font-semibold">Technology:</span> {project.technology}
-              </div>
-              <div className="mb-4">
-                <span className="font-semibold">Difficulty:</span> {project.difficulty}
-              </div>
-              <div className="mb-4">
-                <h3 className="font-semibold mb-2">Description:</h3>
-                <p className="text-gray-700">{project.description}</p>
-              </div>
-              <div className="mb-4">
-                <h3 className="font-semibold mb-2">Key Learning Points:</h3>
-                <ul className="list-disc pl-5">
-                  {project.learningPoints?.map((point, index) => (
-                    <li key={index} className="text-gray-700">{point}</li>
-                  ))}
-                </ul>
+          <div className="mt-8">
+            <div className="grid grid-cols-1 gap-6">
+              {/* Generated Project */}
+              {project && (
+                <div>
+                  <h2 className="text-2xl font-bold text-gray-900 mb-4">
+                    Your Generated Project
+                  </h2>
+                  <ProjectCard project={project} projectId="generated" />
+                </div>
+              )}
+
+              {/* Sample Projects */}
+              <div>
+                <h2 className="text-2xl font-bold text-gray-900 mb-4">
+                  Example Projects for Inspiration
+                </h2>
+                {sampleProjects.map((project, index) => (
+                  <ProjectCard 
+                    key={index} 
+                    project={project} 
+                    projectId={`sample-${index}`}
+                  />
+                ))}
               </div>
             </div>
-          )}
+          </div>
         </div>
       </div>
     </div>
