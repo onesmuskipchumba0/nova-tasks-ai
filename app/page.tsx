@@ -45,6 +45,17 @@ export default function Home() {
   const [difficultyLevel, setDifficultyLevel] = useState<string>("");
   const [showHints, setShowHints] = useState<boolean>(false);
   const [showingHints, setShowingHints] = useState<Record<string, boolean>>({});
+  const [theme, setTheme] = useState<'light' | 'dark'>('light');
+  
+  const toggleTheme = () => {
+    const newTheme = theme === 'light' ? 'dark' : 'light';
+    setTheme(newTheme);
+    if (newTheme === 'dark') {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  };
 
   useEffect(() => {
     console.log('Language changed:', selectedLanguage);
@@ -153,122 +164,157 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-4xl mx-auto">
-        <div className="text-center">
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">
-            Daily Coding Project Generator
-          </h1>
-          <p className="text-lg text-gray-600 mb-8">
-            Select your preferred language and stack to generate customized coding projects
-          </p>
-
-          <div className="mb-8 flex flex-col sm:flex-row gap-4 justify-center">
-            <div className="flex flex-col gap-2">
-              <label htmlFor="language" className="text-sm text-gray-600 text-left">
-                Programming Language
-              </label>
-              <select
-                id="language"
-                value={selectedLanguage}
-                onChange={(e) => handleLanguageChange(e.target.value)}
-                className="block w-full sm:w-48 px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+    <>
+      <header className="bg-white dark:bg-gray-800 shadow">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between h-16 items-center">
+            <Link href="/" className="text-2xl font-bold text-blue-600 dark:text-blue-300">
+              Nova Tasks
+            </Link>
+            <div className="flex items-center space-x-4">
+              <Link 
+                href="https://github.com/onesmuskipchumba0" 
+                target="_blank" 
+                className="text-gray-800 dark:text-gray-200 hover:underline"
               >
-                <option value="">Select Language</option>
-                {LANGUAGES.map(lang => (
-                  <option key={lang} value={lang}>{lang}</option>
-                ))}
-              </select>
-            </div>
-
-            <div className="flex flex-col gap-2">
-              <label htmlFor="stack" className="text-sm text-gray-600 text-left">
-                Framework/Stack
-              </label>
-              <select
-                id="stack"
-                value={selectedStack}
-                onChange={(e) => setSelectedStack(e.target.value)}
-                className="block w-full sm:w-48 px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                disabled={!selectedLanguage}
+                GitHub
+              </Link>
+              <Link 
+                href="/chat" 
+                className="text-gray-800 dark:text-gray-200 hover:underline"
               >
-                <option value="">Select Stack</option>
-                {selectedLanguage && STACKS[selectedLanguage]?.map(stack => (
-                  <option key={stack} value={stack}>{stack}</option>
-                ))}
-              </select>
-            </div>
-
-            <div className="flex flex-col gap-2">
-              <label htmlFor="difficulty" className="text-sm text-gray-600 text-left">
-                Difficulty Level
-              </label>
-              <select
-                id="difficulty"
-                value={difficultyLevel}
-                onChange={(e) => setDifficultyLevel(e.target.value)}
-                className="block w-full sm:w-48 px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                Chat with AI
+              </Link>
+              <button 
+                onClick={toggleTheme} 
+                className="px-3 py-1 rounded bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200"
               >
-                <option value="">Select Difficulty</option>
-                {DIFFICULTY_LEVELS.map(level => (
-                  <option key={level} value={level}>
-                    {level.charAt(0).toUpperCase() + level.slice(1)}
-                  </option>
-                ))}
-              </select>
+                {theme === 'light' ? 'Dark' : 'Light'} Mode
+              </button>
             </div>
           </div>
+        </div>
+      </header>
+      
+      <main>
+        <div className="min-h-screen bg-gray-100 py-12 px-4 sm:px-6 lg:px-8">
+          <div className="max-w-4xl mx-auto">
+            <div className="text-center">
+              <h1 className="text-4xl font-bold text-gray-900 mb-4">
+                Daily Coding Project Generator
+              </h1>
+              <p className="text-lg text-gray-600 mb-8">
+                Select your preferred language and stack to generate customized coding projects
+              </p>
 
-          <button
-            onClick={generateProject}
-            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed"
-            disabled={loading || !selectedLanguage || !selectedStack || !difficultyLevel}
-          >
-            {loading ? 'Generating...' : 'Generate Project'}
-          </button>
+              <div className="mb-8 flex flex-col sm:flex-row gap-4 justify-center">
+                <div className="flex flex-col gap-2">
+                  <label htmlFor="language" className="text-sm text-gray-600 text-left">
+                    Programming Language
+                  </label>
+                  <select
+                    id="language"
+                    value={selectedLanguage}
+                    onChange={(e) => handleLanguageChange(e.target.value)}
+                    className="block w-full sm:w-48 px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  >
+                    <option value="">Select Language</option>
+                    {LANGUAGES.map(lang => (
+                      <option key={lang} value={lang}>{lang}</option>
+                    ))}
+                  </select>
+                </div>
 
-          {error && (
-            <div className="mt-4 p-4 bg-red-100 text-red-700 rounded-lg">
-              Error: {error}
-            </div>
-          )}
+                <div className="flex flex-col gap-2">
+                  <label htmlFor="stack" className="text-sm text-gray-600 text-left">
+                    Framework/Stack
+                  </label>
+                  <select
+                    id="stack"
+                    value={selectedStack}
+                    onChange={(e) => setSelectedStack(e.target.value)}
+                    className="block w-full sm:w-48 px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    disabled={!selectedLanguage}
+                  >
+                    <option value="">Select Stack</option>
+                    {selectedLanguage && STACKS[selectedLanguage]?.map(stack => (
+                      <option key={stack} value={stack}>{stack}</option>
+                    ))}
+                  </select>
+                </div>
 
-          {loading && (
-            <div className="mt-8 text-center">
-              <div className="inline-block animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500"></div>
-              <p className="mt-2 text-gray-600">Generating your project...</p>
-            </div>
-          )}
+                <div className="flex flex-col gap-2">
+                  <label htmlFor="difficulty" className="text-sm text-gray-600 text-left">
+                    Difficulty Level
+                  </label>
+                  <select
+                    id="difficulty"
+                    value={difficultyLevel}
+                    onChange={(e) => setDifficultyLevel(e.target.value)}
+                    className="block w-full sm:w-48 px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  >
+                    <option value="">Select Difficulty</option>
+                    {DIFFICULTY_LEVELS.map(level => (
+                      <option key={level} value={level}>
+                        {level.charAt(0).toUpperCase() + level.slice(1)}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
 
-          <div className="mt-8">
-            <div className="grid grid-cols-1 gap-6">
-              {/* Generated Project */}
-              {project && (
-                <div>
-                  <h2 className="text-2xl font-bold text-gray-900 mb-4">
-                    Your Generated Project
-                  </h2>
-                  <ProjectCard project={project} projectId="generated" />
+              <button
+                onClick={generateProject}
+                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                disabled={loading || !selectedLanguage || !selectedStack || !difficultyLevel}
+              >
+                {loading ? 'Generating...' : 'Generate Project'}
+              </button>
+
+              {error && (
+                <div className="mt-4 p-4 bg-red-100 text-red-700 rounded-lg">
+                  Error: {error}
                 </div>
               )}
 
-              {/* Sample Projects */}
-              <div>
-                <h2 className="text-2xl font-bold text-gray-900 mb-4">
-                  Example Projects for Inspiration
-                </h2>
-                {sampleProjects.map((project, index) => (
-                  <ProjectCard 
-                    key={index} 
-                    project={project} 
-                    projectId={`sample-${index}`}
-                  />
-                ))}
+              {loading && (
+                <div className="mt-8 text-center">
+                  <div className="inline-block animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500"></div>
+                  <p className="mt-2 text-gray-600">Generating your project...</p>
+                </div>
+              )}
+
+              <div className="mt-8">
+                <div className="grid grid-cols-1 gap-6">
+                  {/* Generated Project */}
+                  {project && (
+                    <div>
+                      <h2 className="text-2xl font-bold text-gray-900 mb-4">
+                        Your Generated Project
+                      </h2>
+                      <ProjectCard project={project} projectId="generated" />
+                    </div>
+                  )}
+
+                  {/* Sample Projects */}
+                  <div>
+                    <h2 className="text-2xl font-bold text-gray-900 mb-4">
+                      Example Projects for Inspiration
+                    </h2>
+                    {sampleProjects.map((project, index) => (
+                      <ProjectCard 
+                        key={index} 
+                        project={project} 
+                        projectId={`sample-${index}`}
+                      />
+                    ))}
+                  </div>
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
-    </div>
+      </main>
+    </>
   );
 }
