@@ -15,17 +15,17 @@ export async function OpenAIModel(prompt: string = "Generate a coding project"){
             throw new Error('OPENAI_API_KEY is not configured');
         }
 
-        const projectPrompt = `You must return a valid JSON object with the following structure, and nothing else. No markdown, no backticks:
+        const projectPrompt = `Generate a valid JSON object for a ${prompt}. Use EXACTLY one of these difficulty levels: "beginner", "intermediate", or "advanced". The response must follow this structure exactly:
         {
           "title": "Project title",
           "technology": "Main technology/framework used",
-          "difficulty": "beginner|intermediate|advanced",
+          "difficulty": "beginner" | "intermediate" | "advanced",
           "description": "Detailed project description",
           "learningPoints": ["array", "of", "learning", "points"],
-          "estimatedTime": "estimated completion time"
-        }
-        
-        Generate a fun and practical coding project.`;
+          "estimatedTime": "estimated completion time",
+          "prerequisites": ["required", "skills", "or", "knowledge"],
+          "hints": ["helpful", "implementation", "tips"]
+        }`;
 
         console.log('OpenAI: Sending request to API');
         const response = await client.chat.completions.create({
